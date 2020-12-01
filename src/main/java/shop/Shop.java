@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,7 +23,7 @@ public class Shop
     public final ObservableList<String> logList;
     public BooleanProperty hasFinished = new SimpleBooleanProperty(false);
 
-    public Shop(int n, int queueLimit, double customerIntensity, int serviceTime,
+    public Shop(int n, int queueLimit, double customerIntensity, double serviceTime,
                 double simulationRunTime, ObservableList<String> logList)
     {
         serviceIntensity = 1.0 / serviceTime;
@@ -37,14 +38,19 @@ public class Shop
         }
     }
 
+    private double poisson(double customerIntensity)
+    {
+        double res;
+        Random random = new Random();
+
+        res = Math.log(random.nextDouble()) * (-1 / customerIntensity);
+
+        return res;
+    }
     private Customer generateCustomer()
     {
-        /*
-        TODO
-        Poisson :)
-         */
         try {
-            Thread.sleep(Math.round(1000 / customerIntensity));
+            Thread.sleep(Math.round(1000 * poisson(customerIntensity)));
         }
         catch (Exception exp)
         {
@@ -64,7 +70,7 @@ public class Shop
         }
 
         if(!cashWindows.get(lowerQueue).tryAssign(customer))
-            Platform.runLater(() -> logList.add("Покупатель " + customer.number + " ушел."));
+            Platform.runLater(() -> logList.add("Customer " + customer.number + " has left."));
     }
 
     public void process()

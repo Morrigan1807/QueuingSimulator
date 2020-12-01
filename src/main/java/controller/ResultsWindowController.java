@@ -7,6 +7,7 @@ import shop.Shop;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Locale;
 
 @Log4j2
 public class ResultsWindowController {
@@ -131,14 +132,14 @@ public class ResultsWindowController {
         double averageTimeInQueueValue = (1 / shop.customerIntensity) * averageNumberOfRequestsInTheQueueValue;
         double averageTimeInSystemValue = (1 / shop.customerIntensity) * averageNumberOfRequestsInTheSystemValue;
 
-        systemDowntimeProbability.setText(String.valueOf(systemDowntimeProbabilityValue));
-        rejectionProbability.setText(String.valueOf(rejectionProbabilityValue));
-        absoluteBandwidth.setText(String.valueOf(absoluteBandwidthValue));
-        relativeBandwidth.setText(String.valueOf(relativeBandwidthValue));
-        averageNumberOfBusyChannels.setText(String.valueOf(averageNumberOfBusyChannelsValue));
-        averageNumberOfRequestsInTheQueue.setText(String.valueOf(averageNumberOfRequestsInTheQueueValue));
-        averageNumberOfRequestsInTheSystem.setText(String.valueOf(averageNumberOfRequestsInTheSystemValue));
-        averageTimeInQueue.setText(String.valueOf(averageTimeInQueueValue));
-        averageTimeInSystem.setText(String.valueOf(averageTimeInSystemValue));
+        systemDowntimeProbability.setText(String.format(Locale.US, "%.2f", systemDowntimeProbabilityValue));
+        rejectionProbability.setText(String.format(Locale.US, "%.2f", rejectionProbabilityValue));
+        absoluteBandwidth.setText(String.format(Locale.US, "%.2f", absoluteBandwidthValue));
+        relativeBandwidth.setText(String.format(Locale.US, "%.2f", relativeBandwidthValue));
+        averageNumberOfBusyChannels.setText(String.format(Locale.US, "%.2f", averageNumberOfBusyChannelsValue));
+        averageNumberOfRequestsInTheQueue.setText(String.format(Locale.US, "%.2f", averageNumberOfRequestsInTheQueueValue));
+        averageNumberOfRequestsInTheSystem.setText(String.format(Locale.US, "%.2f", averageNumberOfRequestsInTheSystemValue));
+        averageTimeInQueue.setText(String.format(Locale.US, "%.2f", averageTimeInQueueValue));
+        averageTimeInSystem.setText(String.format(Locale.US, "%.2f", averageTimeInSystemValue));
     }
 }

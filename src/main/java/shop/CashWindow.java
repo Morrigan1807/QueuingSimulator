@@ -8,20 +8,21 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Random;
 
 @Log4j2
 public class CashWindow extends Thread{
     public final Queue<Customer> queue;
     private static int iter = 1;
     public int number;
-    public final int serviceTime;
+    public final double serviceTime;
     public final int queueLimit;
     public ObservableList<String> logList;
     public volatile boolean isWorking = true;
     public DoubleProperty progressValue;
     public IntegerProperty customersInQueueNumber;
 
-    public CashWindow(int queueLimit, int serviceTime, ObservableList<String> logList)
+    public CashWindow(int queueLimit, double serviceTime, ObservableList<String> logList)
     {
         this.logList = logList;
         this.serviceTime = serviceTime;
@@ -29,6 +30,16 @@ public class CashWindow extends Thread{
         queue = new LinkedList<>();
         number = iter;
         iter++;
+    }
+
+    private double poisson(double serviceTime)
+    {
+        double res;
+        Random random = new Random();
+
+        res = Math.log(random.nextDouble()) * (- serviceTime);
+
+        return res;
     }
 
     @Override
@@ -39,11 +50,12 @@ public class CashWindow extends Thread{
                 try {
                     Platform.runLater(()->progressValue.set(0));
                     Customer currentCustomer = queue.element();
-                    Platform.runLater(() -> logList.add("Касса " + this.number + " работает с покупателем "
+                    Platform.runLater(() -> logList.add("Cash desk " + this.number + " is serving customer "
                             + currentCustomer.number + "."));
+                    double tempPoisson = poisson(serviceTime);
                     for(int i = 0; i < 10; i++)
                     {
-                        sleep(serviceTime * 100);
+                        sleep(Math.round(tempPoisson * 100));
                         int finalI = i + 1;
                         Platform.runLater(()->
                                 progressValue.set((double)finalI / 10));
@@ -52,8 +64,8 @@ public class CashWindow extends Thread{
                         queue.remove();
                         customersInQueueNumber.setValue(queue.size());
                     }
-                    Platform.runLater(() -> logList.add("Покупатель " + currentCustomer.number
-                            + " обслужен кассой " + this.number + "."));
+                    Platform.runLater(() -> logList.add("Customer " + currentCustomer.number
+                            + " has been served by cash desk " + this.number + "."));
 
                 } catch (Exception exp) {
                     log.error(exp);
